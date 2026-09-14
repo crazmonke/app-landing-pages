@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>만든 앱들</title>
+<meta name="description" content="새로 만든 iPhone 앱들을 소개합니다.">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero" style="padding-top:40px;">
+      <p class="hub-title">만든 앱들</p>
+      <p class="hub-sub">iPhone에서 만나보세요</p>
+    </div>
+    <div id="app-list" class="app-list">
+      <p class="empty-state">불러오는 중...</p>
+    </div>
+    <div class="footer">
+      <span id="year"></span> · <a href="mailto:yosep.kang@nts-corp.com">문의하기</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function rootDomainUrl(app) {
+      var host = location.hostname;
+      var parts = host.split('.');
+      // Local/path-based preview (e.g. *.pages.dev, localhost): link by path.
+      if (parts.length <= 1 || host.endsWith('.pages.dev') || host === 'localhost') {
+        return '/apps/' + app.id + '/';
+      }
+      var root = parts.slice(-2).join('.');
+      return location.protocol + '//' + app.subdomain + '.' + root + '/';
+    }
+
+    fetch('/apps.json')
+      .then(function (r) { return r.json(); })
+      .then(function (apps) {
+        var list = document.getElementById('app-list');
+        if (!apps.length) {
+          list.innerHTML = '<p class="empty-state">아직 등록된 앱이 없습니다.</p>';
+          return;
+        }
+        list.innerHTML = apps.map(function (app) {
+          return (
+            '<a class="app-card" style="--card-accent:' + app.accent + '" href="' + rootDomainUrl(app) + '">' +
+              '<img class="app-icon" src="' + app.icon + '" alt="' + app.name + ' 아이콘">' +
+              '<div class="meta">' +
+                '<p class="name">' + app.name + '</p>' +
+                '<p class="tag">' + app.tagline + '</p>' +
+              '</div>' +
+              '<span class="arrow">›</span>' +
+            '</a>'
+          );
+        }).join('');
+      })
+      .catch(function () {
+        document.getElementById('app-list').innerHTML = '<p class="empty-state">앱 목록을 불러오지 못했습니다.</p>';
+      });
+  </script>
+</body>
+</html>
