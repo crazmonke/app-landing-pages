@@ -69,6 +69,7 @@
     "icon": "/assets/icons/handpan.png",
     "subdomain": "handpan",
     "appStoreUrl": null,
+    "testFlightUrl": "https://testflight.apple.com/join/WRZwzE7c",
     "features": [
       "배음 합성 기반의 사실적인 핸드팬 사운드",
       "자유 연주 + 따라 연주하기(가이드 연습) 모드",
