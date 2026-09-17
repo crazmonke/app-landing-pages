@@ -67,6 +67,8 @@
 
         var ctaHtml = app.appStoreUrl
           ? '<a class="cta" href="' + app.appStoreUrl + '" target="_blank" rel="noopener"> App Store에서 다운로드</a>'
+          : app.testFlightUrl
+          ? '<a class="cta" href="' + app.testFlightUrl + '" target="_blank" rel="noopener"> TestFlight 베타 참여하기</a>'
           : '<span class="cta disabled">출시 준비 중</span>';
 
         root.innerHTML =
@@ -74,7 +76,7 @@
             '<img class="app-icon" src="' + app.icon + '" alt="' + app.name + ' 아이콘">' +
             '<p class="app-name">' + app.name + '</p>' +
             '<p class="app-name-ko">' + (app.nameKo || '') + '</p>' +
-            '<span class="badge-platform">' + app.platform + ' 전용</span>' +
+            '<span class="badge-platform">' + app.platform + '</span>' +
             '<p class="tagline">' + app.tagline + '</p>' +
             '<p class="description">' + app.description + '</p>' +
             ctaHtml +
