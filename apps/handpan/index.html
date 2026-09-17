@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>앱 소개</title>
+<meta name="description" content="앱 소개 페이지">
+<link rel="stylesheet" href="/css/style.css">
+<style id="accent-style"></style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand" id="brand-name">&nbsp;</span>
+    <a class="back-link" href="/" id="hub-link">전체 앱 보기</a>
+  </div>
+
+  <div class="wrap">
+    <div id="app-root">
+      <p class="empty-state">불러오는 중...</p>
+    </div>
+  </div>
+
+  <script>
+    // 이 파일은 모든 앱이 공유하는 템플릿입니다. 내용은 절대 직접 수정하지 말고
+    // /apps.json 의 데이터만 수정하세요. 새 앱을 추가할 때도 이 파일을 그대로 복사해서
+    // /apps/<새앱id>/index.html 위치에 두면 됩니다.
+
+    function currentAppId() {
+      // 1) 경로 기반 (/apps/<id>/ 로 접근한 경우 — 로컬/미리보기용)
+      var m = location.pathname.match(/\/apps\/([^\/]+)\/?/);
+      if (m) return m[1];
+      // 2) 서브도메인 기반 (실서비스: <id>.upsignaltrader.com)
+      var host = location.hostname.split('.');
+      if (host.length > 2) return host[0];
+      return null;
+    }
+
+    function rootDomainHome() {
+      var host = location.hostname;
+      var parts = host.split('.');
+      if (parts.length <= 2 || host.endsWith('.pages.dev') || host === 'localhost') {
+        return '/';
+      }
+      var root = parts.slice(-2).join('.');
+      return location.protocol + '//' + root + '/';
+    }
+
+    document.getElementById('hub-link').setAttribute('href', rootDomainHome());
+
+    var appId = currentAppId();
+
+    fetch('/apps.json')
+      .then(function (r) { return r.json(); })
+      .then(function (apps) {
+        var app = apps.find(function (a) { return a.id === appId; });
+        var root = document.getElementById('app-root');
+        if (!app) {
+          root.innerHTML = '<p class="empty-state">앱 정보를 찾을 수 없습니다.</p>';
+          return;
+        }
+
+        document.title = app.name + ' — ' + app.tagline;
+        document.querySelector('meta[name="description"]').setAttribute('content', app.description);
+        document.getElementById('brand-name').textContent = app.name;
+        document.getElementById('accent-style').textContent =
+          ':root{--accent:' + app.accent + ';--accent2:' + app.accent2 + ';}';
+
+        var ctaHtml = app.appStoreUrl
+          ? '<a class="cta" href="' + app.appStoreUrl + '" target="_blank" rel="noopener"> App Store에서 다운로드</a>'
+          : app.testFlightUrl
+          ? '<a class="cta" href="' + app.testFlightUrl + '" target="_blank" rel="noopener"> TestFlight 베타 참여하기</a>'
+          : '<span class="cta disabled">출시 준비 중</span>';
+
+        root.innerHTML =
+          '<div class="hero">' +
+            '<img class="app-icon" src="' + app.icon + '" alt="' + app.name + ' 아이콘">' +
+            '<p class="app-name">' + app.name + '</p>' +
+            '<p class="app-name-ko">' + (app.nameKo || '') + '</p>' +
+            '<span class="badge-platform">' + app.platform + '</span>' +
+            '<p class="tagline">' + app.tagline + '</p>' +
+            '<p class="description">' + app.description + '</p>' +
+            ctaHtml +
+          '</div>' +
+          '<ul class="features">' +
+            app.features.map(function (f) { return '<li>' + f + '</li>'; }).join('') +
+          '</ul>' +
+          '<div class="footer">© ' + new Date().getFullYear() + ' ' + app.name + '</div>';
+      })
+      .catch(function () {
+        document.getElementById('app-root').innerHTML = '<p class="empty-state">앱 정보를 불러오지 못했습니다.</p>';
+      });
+  </script>
+</body>
+</html>
