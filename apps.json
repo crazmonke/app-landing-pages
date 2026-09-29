@@ -11,6 +11,7 @@
     "icon": "/assets/icons/yeppi.png",
     "subdomain": "yeppi",
     "appStoreUrl": null,
+    "testFlightUrl": "https://testflight.apple.com/join/4ky4Krx3",
     "features": [
       "촬영 즉시 GPS·시간 자동 기록",
       "지도 위에 이동 경로 자동 생성",
@@ -30,6 +31,7 @@
     "icon": "/assets/icons/ddockddock.png",
     "subdomain": "ddockddock",
     "appStoreUrl": null,
+    "testFlightUrl": "https://testflight.apple.com/join/PBTpj8g1",
     "features": [
       "회원가입 없이 바로 시작하는 심리테스트",
       "오행 × Big Five 기반 성격 분석",
