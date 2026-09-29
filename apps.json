@@ -76,5 +76,25 @@
       "숲 배경 영상과 새소리 앰비언스",
       "11개 언어 지원, 라이트/다크 테마"
     ]
+  },
+  {
+    "id": "loot",
+    "name": "Survive While You Loot",
+    "nameKo": "파밍하는 동안 살아남으세요",
+    "tagline": "좀비 구역에 몰래 들어가 파밍하고, 살아서 탈출하세요",
+    "description": "도시는 무너졌지만 물자는 남아 있습니다. 계약을 받아 좀비 구역에 몰래 들어가 물건을 챙긴 뒤 세이프존으로 탈출하는 Roblox 스텔스 서바이벌 게임. 최대 4인 협동 플레이를 지원합니다.",
+    "platform": "Roblox",
+    "accent": "#F2A93B",
+    "accent2": "#3DA35D",
+    "icon": "/assets/icons/loot.png",
+    "subdomain": "loot",
+    "appStoreUrl": null,
+    "robloxUrl": "https://ro.blox.com/Ebh5?af_dp=roblox%3A%2F%2Fnavigation%2Fgame_details%3FgameId%3D10767828143&af_web_dp=https%3A%2F%2Fwww.roblox.com%2Fgames%2F119620805865740",
+    "features": [
+      "스텔스로 좀비를 피해 물자를 파밍",
+      "주택가·도심·병원, 3개 구역의 계약 시스템",
+      "최대 4인 협동 플레이, 쓰러진 동료 부활",
+      "낮과 밤이 바뀌는 라운드제 서버 경쟁"
+    ]
   }
 ]
