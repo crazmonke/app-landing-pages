@@ -2,22 +2,34 @@
 import Base from '../layouts/Base.astro';
 import { SITE_TITLE, CONTACT_EMAIL } from '../consts';
 ---
-<Base title="소개" description={`${SITE_TITLE} 블로그와 운영자를 소개합니다.`}>
+<Base title="소개" description={`${SITE_TITLE} 블로그와 운영 방식을 소개합니다.`}>
   <div class="prose">
     <h1 class="page-title">소개</h1>
     <p>
-      {SITE_TITLE}는 iPhone 앱과 게임을 직접 기획하고 개발하는 1인 개발자의 블로그입니다.
-      앱을 만들며 겪은 시행착오, 배운 기술, 출시 과정의 경험을 기록합니다.
+      {SITE_TITLE}는 지금 사람들이 가장 많이 찾는 이슈를 빠르고 정확하게 정리하는 블로그입니다.
+      뉴스, 경제, 생활, 연예, 스포츠, IT 등 주제에 제한을 두지 않고, 그날 화제가 된 키워드를 골라
+      "무슨 일이 있었는지, 무엇이 사실인지, 나에게 어떤 의미인지"를 한 번에 이해할 수 있도록 씁니다.
     </p>
-    <h2>다루는 주제</h2>
+
+    <h2>이렇게 씁니다</h2>
     <ul>
-      <li>iOS 앱 개발과 출시 경험</li>
-      <li>개발 중 만난 문제와 해결 방법</li>
-      <li>사용해 본 도구와 서비스 후기</li>
+      <li><strong>여러 출처를 비교합니다.</strong> 하나의 기사만 옮기지 않고, 여러 보도와 공식 자료를 함께 확인합니다.</li>
+      <li><strong>사실과 주장을 구분합니다.</strong> 확인된 내용과 아직 확인되지 않은 내용을 나눠서 적습니다.</li>
+      <li><strong>한 걸음 더 들어갑니다.</strong> 배경, 맥락, 앞으로 달라질 점처럼 기사에서 다루지 않는 부분을 덧붙입니다.</li>
+      <li><strong>출처를 밝힙니다.</strong> 참고한 자료는 글 아래에 링크로 남깁니다.</li>
     </ul>
-    <h2>만든 앱</h2>
-    <p>지금까지 만든 앱은 <a href="/apps/">개발한 앱</a> 메뉴에서 볼 수 있습니다.</p>
+    <p>
+      글 초안을 만들 때 AI 도구의 도움을 받을 수 있지만, 모든 글은 운영자가 내용과 출처를 직접 검토한 뒤 게시합니다.
+      잘못된 내용을 발견하시면 알려주세요. 확인 후 바로 고치고 수정 이력을 남기겠습니다.
+    </p>
+
+    <h2>운영자</h2>
+    <p>
+      운영자는 iPhone 앱과 게임을 만드는 1인 개발자입니다.
+      지금까지 만든 앱은 <a href="/apps/">개발한 앱</a> 메뉴에서 볼 수 있습니다.
+    </p>
+
     <h2>연락처</h2>
-    <p>제안이나 문의는 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>로 보내주세요.</p>
+    <p>제보, 정정 요청, 제안은 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>로 보내주세요.</p>
   </div>
 </Base>
