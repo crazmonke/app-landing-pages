@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import { SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT, CONTACT_EMAIL } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description = SITE_DESCRIPTION, type = 'website', jsonLd } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/', label: '블로그', active: path === '/' || path.startsWith('/blog') },
+  { href: '/apps/', label: '개발한 앱', active: path.startsWith('/apps') },
+  { href: '/about/', label: '소개', active: path.startsWith('/about') },
+];
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
+  <meta property="og:type" content={type} />
+  <meta property="og:site_name" content={SITE_TITLE} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary" />
+  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  {ADSENSE_CLIENT && (
+    <script
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+      crossorigin="anonymous"
+    ></script>
+  )}
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="/">{SITE_TITLE}</a>
+      <nav class="nav">
+        {nav.map((item) => (
+          <a href={item.href} class:list={[{ active: item.active }]}>{item.label}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <slot />
+  </main>
+  <footer class="site-footer">
+    <span>© {new Date().getFullYear()} {SITE_TITLE}</span>
+    <a href="/privacy/">개인정보처리방침</a>
+    <a href={`mailto:${CONTACT_EMAIL}`}>문의하기</a>
+    <a href="/rss.xml">RSS</a>
+  </footer>
+</body>
+</html>

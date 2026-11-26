@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import apps from '../../../public/apps.json';
+
+// 각 앱은 <subdomain>.upsignaltrader.com 에서 서비스됩니다.
+const appUrl = (app: (typeof apps)[number]) => `https://${app.subdomain}.upsignaltrader.com/`;
+---
+<Base title="개발한 앱" description="직접 만든 iPhone 앱과 게임들을 소개합니다.">
+  <h1 class="page-title">개발한 앱</h1>
+  <p class="page-sub">앱부터 게임까지, 직접 만든 것들</p>
+  <div class="app-list">
+    {apps.map((app) => (
+      <a class="app-card" style={`--card-accent:${app.accent}`} href={appUrl(app)}>
+        <img class="app-icon" src={app.icon} alt={`${app.name} 아이콘`} width="60" height="60" loading="lazy" />
+        <div>
+          <p class="name">{app.name}</p>
+          <p class="tagline">{app.tagline}</p>
+        </div>
+        <span class="arrow">›</span>
+      </a>
+    ))}
+  </div>
+</Base>

@@ -39,10 +39,10 @@
       var host = location.hostname;
       var parts = host.split('.');
       if (parts.length <= 2 || host.endsWith('.pages.dev') || host === 'localhost') {
-        return '/';
+        return '/apps/';
       }
       var root = parts.slice(-2).join('.');
-      return location.protocol + '//' + root + '/';
+      return location.protocol + '//' + root + '/apps/';
     }
 
     document.getElementById('hub-link').setAttribute('href', rootDomainHome());

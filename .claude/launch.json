@@ -5,6 +5,12 @@
       "name": "landing-preview",
       "port": 5050,
       "url": "http://localhost:5050"
+    },
+    {
+      "name": "blog-pages-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "pages", "dev", "dist", "--port", "8788"],
+      "port": 8788
     }
   ]
 }
