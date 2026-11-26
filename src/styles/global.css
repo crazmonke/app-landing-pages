@@ -166,3 +166,9 @@ a { color: inherit; text-decoration: none; }
 .sources { margin-top: 48px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 15px; }
 .sources h2 { font-size: 17px; margin-top: 16px; }
 .sources li { margin-bottom: 6px; }
+
+/* 글 대표 이미지 */
+.hero { margin: 1rem 0 1.5rem; }
+.hero img { width: 100%; height: auto; max-height: 420px; object-fit: cover; border-radius: 12px; display: block; }
+.hero figcaption { font-size: 0.78rem; opacity: 0.65; margin-top: 0.4rem; }
+.post-card .thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 0.6rem; display: block; }

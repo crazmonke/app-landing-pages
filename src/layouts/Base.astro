@@ -8,12 +8,14 @@ interface Props {
   title?: string;
   description?: string;
   type?: 'website' | 'article';
+  image?: string;
   jsonLd?: Record<string, unknown>;
   // 이 페이지의 언어별 주소. 언어 전환 링크와 hreflang에 쓰입니다.
   alternates?: { lang: Lang; href: string }[];
 }
 
-const { lang = DEFAULT_LANG, title, type = 'website', jsonLd, alternates = [] } = Astro.props;
+const { lang = DEFAULT_LANG, title, type = 'website', jsonLd, alternates = [], image } = Astro.props;
+const imageUrl = image ? new URL(image, Astro.site).toString() : undefined;
 const t = UI[lang];
 const description = Astro.props.description ?? t.siteDescription;
 const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
@@ -50,7 +52,9 @@ const nav = [
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:locale" content={t.ogLocale} />
-  <meta name="twitter:card" content="summary" />
+  {imageUrl && <meta property="og:image" content={imageUrl} />}
+  <meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+  {imageUrl && <meta name="twitter:image" content={imageUrl} />}
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
   {ADSENSE_CLIENT && (
     <script
