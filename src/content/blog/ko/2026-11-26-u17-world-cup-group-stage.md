@@ -3,6 +3,9 @@ title: 'U-17 월드컵 한국 조별리그 전승, 무엇이 대단한가'
 description: 'U-17 축구대표팀이 에콰도르를 3-2로 꺾고 조별리그 3전 전승으로 32강에 올랐습니다. FIFA 주관 대회 첫 기록의 의미를 정리했습니다.'
 pubDate: 2026-11-26
 tags: ['U-17 월드컵', '축구', '김현준', '한국 축구']
+image: '/images/blog/2026-11-26-u17-world-cup-group-stage.jpg'
+imageAlt: '잔디 경기장 위의 축구공'
+imageCredit: '사진: Peter Glaser / Unsplash (CC0, Wikimedia Commons)'
 sources:
   - title: 'MBC 뉴스 - U-17 축구대표팀, 조별리그 전승으로 월드컵 32강행'
     url: 'https://imnews.imbc.com/news/2026/sports/article/6868667_36946.html'

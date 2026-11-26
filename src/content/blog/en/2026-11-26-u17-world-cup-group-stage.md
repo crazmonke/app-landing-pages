@@ -3,6 +3,9 @@ title: 'South Korea U-17 Sweeps Group Stage at World Cup'
 description: 'South Korea beat Ecuador 3-2 to win all three U-17 World Cup group games and reach the round of 32, a first at a FIFA tournament.'
 pubDate: 2026-11-26
 tags: ['U-17 World Cup', 'football', 'South Korea', 'youth soccer']
+image: '/images/blog/2026-11-26-u17-world-cup-group-stage.jpg'
+imageAlt: 'A soccer ball on a grass pitch'
+imageCredit: 'Photo: Peter Glaser / Unsplash (CC0, via Wikimedia Commons)'
 sources:
   - title: 'MBC News - U-17 team sweeps group stage, advances to round of 32'
     url: 'https://imnews.imbc.com/news/2026/sports/article/6868667_36946.html'

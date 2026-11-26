@@ -9,7 +9,7 @@ const { post } = Astro.props;
 const lang = postLang(post);
 const t = UI[lang];
 const { Content } = await render(post);
-const { title, description, pubDate, updatedDate, tags, sources } = post.data;
+const { title, description, pubDate, updatedDate, tags, sources, image, imageAlt, imageCredit } = post.data;
 const alternates = await getTranslations(post);
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -19,13 +19,14 @@ const jsonLd = {
   inLanguage: lang,
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
+  ...(image ? { image: new URL(image, Astro.site).toString() } : {}),
   author: { '@type': 'Person', name: AUTHOR },
   publisher: { '@type': 'Organization', name: SITE_TITLE },
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
   ...(sources.length ? { citation: sources.map((s) => s.url) } : {}),
 };
 ---
-<Base lang={lang} title={title} description={description} type="article" jsonLd={jsonLd} alternates={alternates}>
+<Base lang={lang} title={title} description={description} type="article" image={image} jsonLd={jsonLd} alternates={alternates}>
   <article class="article">
     <div class="meta">
       <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
@@ -33,6 +34,12 @@ const jsonLd = {
     </div>
     <h1>{title}</h1>
     <div class="meta">{tags.map((tag) => <span class="tag">#{tag}</span>)}</div>
+    {image && (
+      <figure class="hero">
+        <img src={image} alt={imageAlt ?? title} width="1280" loading="eager" />
+        {imageCredit && <figcaption>{imageCredit}</figcaption>}
+      </figure>
+    )}
     <div class="prose">
       <Content />
       {sources.length > 0 && (

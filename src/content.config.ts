@@ -17,6 +17,9 @@ const blog = defineCollection({
         url: z.string().url().refine((u) => /^https?:\/\//i.test(u), 'http(s) only'),
       }))
       .default([]),
+    image: z.string().regex(/^\/images\/blog\/[\w.-]+$/).optional(),
+    imageAlt: z.string().optional(),
+    imageCredit: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

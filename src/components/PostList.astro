@@ -24,6 +24,7 @@ const alternates = (['ko', 'en'] as Lang[]).map((l) => ({ lang: l, href: `${pref
           <div class="meta">
             <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, lang)}</time>
           </div>
+          {post.data.image && <img class="thumb" src={post.data.image} alt="" loading="lazy" />}
           <h2>{post.data.title}</h2>
           <p>{post.data.description}</p>
         </a>
