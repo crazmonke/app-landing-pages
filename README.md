@@ -32,25 +32,40 @@ draft: false             # true면 공개되지 않음
 
 ## 트렌드 초안 자동 생성
 
-`.github/workflows/daily-drafts.yml`이 매일 07:00(KST)에 실행됩니다.
+**평소: Claude 데스크톱 앱 예약 작업 (구독 사용, API 비용 없음)**
 
-1. Google Trends RSS(`TRENDS_GEO`, 기본 KR)에서 급상승 키워드를 가져옵니다.
-2. Claude가 설명할 가치가 있는 주제를 고릅니다 (`DRAFT_COUNT`, 기본 5개). 개인 신상, 사건 피해자, 확인 안 되는 루머는 제외합니다.
-3. 주제마다 웹 검색으로 여러 출처를 확인하고 한국어/영어 글을 씁니다. 확인이 안 되면 건너뜁니다.
-4. `drafts/<날짜>` 브랜치로 PR을 엽니다.
+24시간 켜 둔 맥의 Claude 데스크톱 앱이 매일 07:00에 [scripts/daily-draft-task.md](scripts/daily-draft-task.md)의 지시대로 실행합니다.
+
+1. `npm run trends:json`으로 Google Trends(한국) 급상승 키워드와 관련 기사를 가져옵니다.
+2. 설명할 가치가 있는 주제를 최대 3개 고릅니다. 개인 신상, 사건 피해자, 확인 안 되는 루머는 제외합니다.
+3. 웹 검색으로 여러 출처를 확인하고 한국어/영어 글을 씁니다.
+4. 빌드를 확인한 뒤 `drafts/<날짜>` 브랜치로 PR을 엽니다.
 
 **검토:** PR에서 글을 읽고, 게시하지 않을 글은 ko/en 파일을 둘 다 지우고, 고칠 부분은 직접 고친 뒤 **Merge하면 게시**됩니다.
-Actions 탭 → Daily trend drafts → Run workflow로 바로 실행할 수도 있습니다.
 
-로컬에서:
+**예약 작업을 등록하는 맥에서 한 번만:**
+```bash
+gh auth login                                            # GitHub 로그인 (이미 했다면 생략)
+gh repo clone crazmonke/app-landing-pages ~/app-landing-pages
+cd ~/app-landing-pages && npm ci
+```
+그다음 Claude 데스크톱 앱(Code 탭)에서 `~/app-landing-pages` 폴더로 세션을 열고 이렇게 요청합니다:
+> scripts/daily-draft-task.md 내용으로 매일 07:00에 실행되는 예약 작업을 만들어줘
+
+- 앱이 켜져 있어야 실행됩니다 (꺼져 있으면 다음에 켤 때 실행).
+- 맥이 잠자기 상태가 되지 않게 설정하세요.
+- 구독 사용량 한도를 함께 씁니다.
+
+**예비: GitHub Actions (Anthropic API, 유료)**
+
+맥을 쓸 수 없을 때는 Actions 탭 → Daily trend drafts → Run workflow로 수동 실행합니다.
+`ANTHROPIC_API_KEY` 시크릿과 "Allow GitHub Actions to create and approve pull requests" 설정이 필요합니다.
+
+로컬에서 API로 직접 실행:
 ```bash
 npm run trends                 # 오늘의 트렌드만 보기 (API 호출 없음)
-ANTHROPIC_API_KEY=... npm run draft   # 초안 생성
+ANTHROPIC_API_KEY=... npm run draft
 ```
-
-필요한 GitHub 설정:
-- Settings → Secrets and variables → Actions → `ANTHROPIC_API_KEY`
-- Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
 
 ## 구조
 
@@ -58,7 +73,8 @@ ANTHROPIC_API_KEY=... npm run draft   # 초안 생성
 src/pages/index.astro, en/   블로그 메인 (언어별 글 목록)
 src/pages/blog, en/blog      글 상세 (src/components/PostView.astro)
 src/i18n.ts                  언어 설정, 메뉴 문구
-scripts/draft.mjs            트렌드 → 초안 생성 스크립트
+scripts/draft.mjs            트렌드 수집 / API 초안 생성 스크립트
+scripts/daily-draft-task.md  데스크톱 예약 작업 지시문
 src/pages/apps/index.astro   개발한 앱 목록 (public/apps.json을 빌드 때 읽음)
 src/pages/about, privacy     소개, 개인정보처리방침 (애드센스 심사용)
 src/content/blog/{ko,en}/    블로그 글 (Markdown/MDX)

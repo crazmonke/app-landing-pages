@@ -3,6 +3,7 @@
 //
 //   node scripts/draft.mjs            # 초안 생성 (ANTHROPIC_API_KEY 필요)
 //   node scripts/draft.mjs --dry-run  # API 호출 없이 트렌드 목록만 출력
+//   node scripts/draft.mjs --json     # 트렌드와 관련 기사 목록을 JSON으로 출력 (데스크톱 예약 작업용)
 //
 // 환경 변수
 //   TRENDS_GEO     트렌드 국가 코드 (기본 KR)
@@ -22,7 +23,8 @@ const GEO = process.env.TRENDS_GEO || 'KR';
 const COUNT = Number(process.env.DRAFT_COUNT || 5);
 const MODEL = process.env.CLAUDE_MODEL || 'claude-opus-5-5';
 const EFFORT = process.env.CLAUDE_EFFORT || 'high';
-const DRY_RUN = process.argv.includes('--dry-run');
+const JSON_OUT = process.argv.includes('--json');
+const DRY_RUN = JSON_OUT || process.argv.includes('--dry-run');
 const CONTENT_DIR = path.resolve('src/content/blog');
 const BETAS = ['server-side-fallback-2026-07-01'];
 
@@ -244,6 +246,10 @@ function saveArticle(article) {
 // ---------------------------------------------------------------- 실행
 
 const trends = (await fetchTrends(GEO)).sort((a, b) => trafficNum(b.traffic) - trafficNum(a.traffic));
+if (JSON_OUT) {
+  console.log(JSON.stringify({ geo: GEO, date: today, trends }, null, 2));
+  process.exit(0);
+}
 console.log(`Trends ${GEO} ${today}: ${trends.length} keywords`);
 for (const t of trends) console.log(`  ${t.traffic.padStart(7)}  ${t.keyword}  (${t.news.length} news)`);
 if (DRY_RUN) process.exit(0);
