@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { SITE_TITLE, CONTACT_EMAIL } from '../consts';
 ---
-<Base title="소개" description={`${SITE_TITLE} 블로그와 운영 방식을 소개합니다.`}>
+<Base lang="ko" alternates={[{ lang: 'ko', href: '/about/' }, { lang: 'en', href: '/en/about/' }]} title="소개" description={`${SITE_TITLE} 블로그와 운영 방식을 소개합니다.`}>
   <div class="prose">
     <h1 class="page-title">소개</h1>
     <p>

@@ -1,40 +1,55 @@
 ---
 import '../styles/global.css';
-import { SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT, CONTACT_EMAIL } from '../consts';
+import { SITE_TITLE, ADSENSE_CLIENT, CONTACT_EMAIL } from '../consts';
+import { UI, prefix, DEFAULT_LANG, type Lang } from '../i18n';
 
 interface Props {
+  lang?: Lang;
   title?: string;
   description?: string;
   type?: 'website' | 'article';
   jsonLd?: Record<string, unknown>;
+  // 이 페이지의 언어별 주소. 언어 전환 링크와 hreflang에 쓰입니다.
+  alternates?: { lang: Lang; href: string }[];
 }
 
-const { title, description = SITE_DESCRIPTION, type = 'website', jsonLd } = Astro.props;
+const { lang = DEFAULT_LANG, title, type = 'website', jsonLd, alternates = [] } = Astro.props;
+const t = UI[lang];
+const description = Astro.props.description ?? t.siteDescription;
 const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
+const p = prefix(lang);
+const otherLang: Lang = lang === 'ko' ? 'en' : 'ko';
+const switchHref = alternates.find((a) => a.lang === otherLang)?.href ?? `${prefix(otherLang)}/`;
+const xDefault = alternates.find((a) => a.lang === DEFAULT_LANG);
+
 const nav = [
-  { href: '/', label: '블로그', active: path === '/' || path.startsWith('/blog') },
-  { href: '/apps/', label: '개발한 앱', active: path.startsWith('/apps') },
-  { href: '/about/', label: '소개', active: path.startsWith('/about') },
+  { href: `${p}/`, label: t.blog, active: path === `${p}/` || path.startsWith(`${p}/blog`) },
+  { href: '/apps/', label: t.apps, active: path.startsWith('/apps') },
+  { href: `${p}/about/`, label: t.about, active: path.startsWith(`${p}/about`) },
 ];
 ---
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  {alternates.map((a) => (
+    <link rel="alternate" hreflang={a.lang} href={new URL(a.href, Astro.site)} />
+  ))}
+  {xDefault && <link rel="alternate" hreflang="x-default" href={new URL(xDefault.href, Astro.site)} />}
   <link rel="sitemap" href="/sitemap-index.xml" />
-  <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={`${p}/rss.xml`} />
   <meta property="og:type" content={type} />
   <meta property="og:site_name" content={SITE_TITLE} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
-  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale" content={t.ogLocale} />
   <meta name="twitter:card" content="summary" />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   {ADSENSE_CLIENT && (
@@ -48,11 +63,12 @@ const nav = [
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a class="logo" href="/">{SITE_TITLE}</a>
+      <a class="logo" href={`${p}/`}>{SITE_TITLE}</a>
       <nav class="nav">
         {nav.map((item) => (
           <a href={item.href} class:list={[{ active: item.active }]}>{item.label}</a>
         ))}
+        <a href={switchHref} hreflang={otherLang} class="lang-switch">{t.switchTo}</a>
       </nav>
     </div>
   </header>
@@ -61,9 +77,9 @@ const nav = [
   </main>
   <footer class="site-footer">
     <span>© {new Date().getFullYear()} {SITE_TITLE}</span>
-    <a href="/privacy/">개인정보처리방침</a>
-    <a href={`mailto:${CONTACT_EMAIL}`}>문의하기</a>
-    <a href="/rss.xml">RSS</a>
+    <a href={`${p}/privacy/`}>{t.privacy}</a>
+    <a href={`mailto:${CONTACT_EMAIL}`}>{t.contact}</a>
+    <a href={`${p}/rss.xml`}>RSS</a>
   </footer>
 </body>
 </html>

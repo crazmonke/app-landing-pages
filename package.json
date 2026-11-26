@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler pages deploy dist --project-name=app-landing-pages"
+    "deploy": "astro build && wrangler pages deploy dist --project-name=app-landing-pages",
+    "draft": "node scripts/draft.mjs",
+    "trends": "node scripts/draft.mjs --dry-run"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",
@@ -15,6 +17,7 @@
     "astro": "^7.4.13"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^1.14.0",
     "wrangler": "^4.168.0"
   }
 }

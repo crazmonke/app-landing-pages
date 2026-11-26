@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { SITE_TITLE, SITE_URL, CONTACT_EMAIL } from '../consts';
 ---
-<Base title="개인정보처리방침" description={`${SITE_TITLE}의 개인정보처리방침입니다.`}>
+<Base lang="ko" alternates={[{ lang: 'ko', href: '/privacy/' }, { lang: 'en', href: '/en/privacy/' }]} title="개인정보처리방침" description={`${SITE_TITLE}의 개인정보처리방침입니다.`}>
   <div class="prose">
     <h1 class="page-title">개인정보처리방침</h1>
     <p class="meta">시행일: 2026년 11월 26일</p>

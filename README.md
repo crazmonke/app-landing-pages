@@ -6,30 +6,62 @@ Cloudflare Pages 무료 호스팅 + Pages Functions 미들웨어로 서브도메
 
 ## 블로그 글 쓰기
 
-1. `src/content/blog/<글-주소>.md` 파일을 만듭니다. 파일 이름이 URL이 됩니다 (`/blog/<글-주소>/`).
-2. 맨 위에 frontmatter를 씁니다:
-   ```
-   ---
-   title: '글 제목'
-   description: '검색 결과에 보일 한두 문장 요약'
-   pubDate: 2026-11-26
-   tags: ['태그']
-   draft: false   # true면 공개되지 않음
-   ---
-   ```
-3. `npm run dev`로 확인한 뒤 `npm run deploy`로 배포합니다.
+글은 언어별 폴더에 둡니다. **같은 파일 이름**의 ko/en 글은 서로의 번역본으로 연결됩니다 (언어 전환 링크, hreflang).
 
-사이트 이름, 설명, 애드센스 게시자 ID는 `src/consts.ts`에서 바꿉니다.
+```
+src/content/blog/ko/<글-주소>.md   → https://upsignaltrader.com/blog/<글-주소>/
+src/content/blog/en/<글-주소>.md   → https://upsignaltrader.com/en/blog/<글-주소>/
+```
+
+frontmatter:
+```
+---
+title: '글 제목'
+description: '검색 결과에 보일 한두 문장 요약'
+pubDate: 2026-11-26
+tags: ['태그']
+sources:                 # 글 아래 "참고한 자료"로 표시됨
+  - title: '출처 이름'
+    url: 'https://...'
+draft: false             # true면 공개되지 않음
+---
+```
+
+사이트 이름과 애드센스 게시자 ID는 `src/consts.ts`, 언어별 메뉴 문구와 사이트 설명은 `src/i18n.ts`에서 바꿉니다.
 애드센스 승인 후에는 `ADSENSE_CLIENT`를 채우고 `public/ads.txt`를 추가하세요.
+
+## 트렌드 초안 자동 생성
+
+`.github/workflows/daily-drafts.yml`이 매일 07:00(KST)에 실행됩니다.
+
+1. Google Trends RSS(`TRENDS_GEO`, 기본 KR)에서 급상승 키워드를 가져옵니다.
+2. Claude가 설명할 가치가 있는 주제를 고릅니다 (`DRAFT_COUNT`, 기본 5개). 개인 신상, 사건 피해자, 확인 안 되는 루머는 제외합니다.
+3. 주제마다 웹 검색으로 여러 출처를 확인하고 한국어/영어 글을 씁니다. 확인이 안 되면 건너뜁니다.
+4. `drafts/<날짜>` 브랜치로 PR을 엽니다.
+
+**검토:** PR에서 글을 읽고, 게시하지 않을 글은 ko/en 파일을 둘 다 지우고, 고칠 부분은 직접 고친 뒤 **Merge하면 게시**됩니다.
+Actions 탭 → Daily trend drafts → Run workflow로 바로 실행할 수도 있습니다.
+
+로컬에서:
+```bash
+npm run trends                 # 오늘의 트렌드만 보기 (API 호출 없음)
+ANTHROPIC_API_KEY=... npm run draft   # 초안 생성
+```
+
+필요한 GitHub 설정:
+- Settings → Secrets and variables → Actions → `ANTHROPIC_API_KEY`
+- Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
 
 ## 구조
 
 ```
-src/pages/index.astro        블로그 메인 (글 목록)
-src/pages/blog/[...slug]     글 상세
+src/pages/index.astro, en/   블로그 메인 (언어별 글 목록)
+src/pages/blog, en/blog      글 상세 (src/components/PostView.astro)
+src/i18n.ts                  언어 설정, 메뉴 문구
+scripts/draft.mjs            트렌드 → 초안 생성 스크립트
 src/pages/apps/index.astro   개발한 앱 목록 (public/apps.json을 빌드 때 읽음)
 src/pages/about, privacy     소개, 개인정보처리방침 (애드센스 심사용)
-src/content/blog/            블로그 글 (Markdown/MDX)
+src/content/blog/{ko,en}/    블로그 글 (Markdown/MDX)
 public/apps.json             모든 앱의 데이터 (이름, 소개, 아이콘, 앱스토어 링크 등)
 public/apps/<id>/index.html  앱별 페이지 — 전부 동일한 템플릿(public/apps/_template)의 복사본
 public/assets/icons/<id>.png 앱 아이콘

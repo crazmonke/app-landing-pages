@@ -1,0 +1,77 @@
+# 매일 아침 Google Trends 급상승 키워드로 한국어/영어 초안을 만들고 PR을 엽니다.
+# PR을 검토한 뒤 Merge하면 Cloudflare Pages가 자동으로 게시합니다.
+#
+# 필요한 설정
+#   Settings → Secrets and variables → Actions → New repository secret
+#     ANTHROPIC_API_KEY
+#   Settings → Actions → General → Workflow permissions
+#     "Allow GitHub Actions to create and approve pull requests" 체크
+name: Daily trend drafts
+
+on:
+  schedule:
+    - cron: '0 22 * * *' # 매일 07:00 KST
+  workflow_dispatch:
+    inputs:
+      count:
+        description: '만들 글 수'
+        default: '5'
+      geo:
+        description: '트렌드 국가 코드'
+        default: 'KR'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-drafts
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write drafts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRAFT_COUNT: ${{ inputs.count || '5' }}
+          TRENDS_GEO: ${{ inputs.geo || 'KR' }}
+          PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY secret is not set; skipping."; exit 0
+          fi
+          node scripts/draft.mjs
+
+      - name: Check the site still builds
+        run: npm run build
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain src/content/blog)" ]; then
+            echo "No drafts written."; exit 0
+          fi
+          DATE=$(TZ=Asia/Seoul date +%F)
+          BRANCH="drafts/$DATE-${{ github.run_number }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add src/content/blog
+          git commit -m "Drafts: trending topics $DATE"
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "트렌드 초안 $DATE" \
+            --body-file "${{ runner.temp }}/pr-body.md"

@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE_TITLE, SITE_URL } from '../consts';
+import { UI, getPosts, postUrl, formatDate, prefix, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = UI[lang];
+const posts = await getPosts(lang);
+const alternates = (['ko', 'en'] as Lang[]).map((l) => ({ lang: l, href: `${prefix(l)}/` }));
+---
+<Base
+  lang={lang}
+  alternates={alternates}
+  jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_TITLE, url: SITE_URL, description: t.siteDescription, inLanguage: lang }}
+>
+  <h1 class="page-title">{t.blog}</h1>
+  <p class="page-sub">{t.siteDescription}</p>
+  {posts.length === 0 && <p class="page-sub">{t.empty}</p>}
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li>
+        <a class="post-card" href={postUrl(post)}>
+          <div class="meta">
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, lang)}</time>
+          </div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

@@ -161,3 +161,8 @@ a { color: inherit; text-decoration: none; }
   .page-title { font-size: 24px; }
   .article h1 { font-size: 25px; }
 }
+
+.lang-switch { border: 1px solid var(--border); }
+.sources { margin-top: 48px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 15px; }
+.sources h2 { font-size: 17px; margin-top: 16px; }
+.sources li { margin-bottom: 6px; }

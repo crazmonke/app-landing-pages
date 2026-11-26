@@ -1,5 +1,6 @@
 // 사이트 전역 설정. 여기만 고치면 전체 페이지에 반영됩니다.
 export const SITE_TITLE = 'UpSignal';
+// 언어별 사이트 설명은 src/i18n.ts 의 UI 에 있습니다.
 export const SITE_DESCRIPTION = '지금 화제가 된 이슈를 여러 출처로 확인하고 핵심만 정리하는 블로그';
 export const SITE_URL = 'https://upsignaltrader.com';
 export const AUTHOR = 'UpSignal';

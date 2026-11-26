@@ -1,0 +1,51 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { AUTHOR, SITE_TITLE } from '../consts';
+import { UI, postLang, getTranslations, formatDate, prefix, type Post } from '../i18n';
+
+interface Props { post: Post }
+const { post } = Astro.props;
+const lang = postLang(post);
+const t = UI[lang];
+const { Content } = await render(post);
+const { title, description, pubDate, updatedDate, tags, sources } = post.data;
+const alternates = await getTranslations(post);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  inLanguage: lang,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  author: { '@type': 'Person', name: AUTHOR },
+  publisher: { '@type': 'Organization', name: SITE_TITLE },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
+  ...(sources.length ? { citation: sources.map((s) => s.url) } : {}),
+};
+---
+<Base lang={lang} title={title} description={description} type="article" jsonLd={jsonLd} alternates={alternates}>
+  <article class="article">
+    <div class="meta">
+      <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+      {updatedDate && <span> · {t.updated} {formatDate(updatedDate, lang)}</span>}
+    </div>
+    <h1>{title}</h1>
+    <div class="meta">{tags.map((tag) => <span class="tag">#{tag}</span>)}</div>
+    <div class="prose">
+      <Content />
+      {sources.length > 0 && (
+        <section class="sources">
+          <h2>{t.sources}</h2>
+          <ol>
+            {sources.map((s) => (
+              <li><a href={s.url} rel="noopener nofollow" target="_blank">{s.title}</a></li>
+            ))}
+          </ol>
+        </section>
+      )}
+    </div>
+  </article>
+  <p><a href={`${prefix(lang)}/`} class="meta">{t.backToList}</a></p>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE_TITLE, CONTACT_EMAIL } from '../../consts';
+---
+<Base lang="en" alternates={[{ lang: 'ko', href: '/about/' }, { lang: 'en', href: '/en/about/' }]} title="About" description={`About ${SITE_TITLE} and how we write.`}>
+  <div class="prose">
+    <h1 class="page-title">About</h1>
+    <p>
+      {SITE_TITLE} explains the stories people are searching for right now. We cover any topic, from news and
+      the economy to everyday life, entertainment, sports and tech, and pick the keywords trending that day so you can
+      quickly understand what happened, what is actually true, and why it matters.
+    </p>
+
+    <h2>How we write</h2>
+    <ul>
+      <li><strong>We compare sources.</strong> Every post draws on several reports and official documents, not a single article.</li>
+      <li><strong>We separate facts from claims.</strong> Confirmed information and unverified claims are labeled as such.</li>
+      <li><strong>We add context.</strong> Background and what happens next, the parts news coverage often leaves out.</li>
+      <li><strong>We cite our sources.</strong> Links to what we used appear at the end of each post.</li>
+    </ul>
+    <p>
+      AI tools may help with early drafts, but every post is reviewed by the editor for accuracy and sourcing before
+      it is published. If you spot a mistake, let us know and we will correct it and note the change.
+    </p>
+
+    <h2>Who runs this site</h2>
+    <p>
+      {SITE_TITLE} is run by an independent developer who builds iPhone apps and games.
+      You can see them on the <a href="/apps/">Apps</a> page (in Korean).
+    </p>
+
+    <h2>Contact</h2>
+    <p>Tips, corrections and questions: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+  </div>
+</Base>
