@@ -11,7 +11,12 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
-    sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
+    sources: z
+      .array(z.object({
+        title: z.string(),
+        url: z.string().url().refine((u) => /^https?:\/\//i.test(u), 'http(s) only'),
+      }))
+      .default([]),
     draft: z.boolean().default(false),
   }),
 });

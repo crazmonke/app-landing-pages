@@ -169,6 +169,12 @@ Source title | https://url
 </sources>`;
 }
 
+// 웹에서 읽은 내용이 섞일 수 있으므로 HTML 태그와 http(s)가 아닌 링크를 제거합니다.
+const stripHtml = (s) => s.replace(/<\/?[a-zA-Z!][^>]*>/g, '');
+const safeLinks = (md) => md.replace(/\]\(\s*(?!https?:\/\/|\/|#)[^)]*\)/gi, ']()');
+const clean = (s) => safeLinks(stripHtml(s));
+const isHttpUrl = (u) => { try { return ['http:', 'https:'].includes(new URL(u).protocol); } catch { return false; } };
+
 const pick = (text, name) => text.match(new RegExp(`<${name}>([\\s\\S]*?)</${name}>`))?.[1].trim() ?? '';
 
 async function writeArticle(topic, trend) {
@@ -189,13 +195,13 @@ async function writeArticle(topic, trend) {
 
   const sources = pick(text, 'sources').split('\n')
     .map((line) => line.split('|').map((s) => s.trim()))
-    .filter(([title, url]) => title && /^https?:\/\//.test(url ?? ''))
-    .map(([title, url]) => ({ title, url }));
+    .filter(([title, url]) => title && isHttpUrl(url ?? ''))
+    .map(([title, url]) => ({ title: stripHtml(title), url: new URL(url).href }));
   const lang = (l) => ({
-    title: pick(text, `${l}_title`),
-    description: pick(text, `${l}_description`),
-    tags: pick(text, `${l}_tags`).split(',').map((s) => s.trim()).filter(Boolean),
-    body: pick(text, `${l}_body`),
+    title: stripHtml(pick(text, `${l}_title`)),
+    description: stripHtml(pick(text, `${l}_description`)),
+    tags: stripHtml(pick(text, `${l}_tags`)).split(',').map((s) => s.trim()).filter(Boolean),
+    body: clean(pick(text, `${l}_body`)),
   });
   const article = {
     slug: pick(text, 'slug').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, ''),
