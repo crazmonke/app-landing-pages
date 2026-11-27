@@ -12,4 +12,4 @@ export const ADSENSE_CLIENT = '';
 
 // Google Analytics 4 측정 ID ('G-XXXXXXXXXX'). 넣으면 모든 페이지에 GA4 태그가 들어갑니다.
 // GA4 관리 → 데이터 스트림 → 웹 스트림에서 확인할 수 있습니다. 비워두면 아무것도 넣지 않습니다.
-export const GA_MEASUREMENT_ID = '';
+export const GA_MEASUREMENT_ID = 'G-03J89ECK21';
