@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE_TITLE, ADSENSE_CLIENT, CONTACT_EMAIL } from '../consts';
+import { SITE_TITLE, ADSENSE_CLIENT, GA_MEASUREMENT_ID, CONTACT_EMAIL } from '../consts';
 import { UI, prefix, DEFAULT_LANG, type Lang } from '../i18n';
 
 interface Props {
@@ -25,6 +25,8 @@ const p = prefix(lang);
 const otherLang: Lang = lang === 'ko' ? 'en' : 'ko';
 const switchHref = alternates.find((a) => a.lang === otherLang)?.href ?? `${prefix(otherLang)}/`;
 const xDefault = alternates.find((a) => a.lang === DEFAULT_LANG);
+// 형식이 맞는 ID만 태그에 넣습니다 (오타로 스크립트가 깨지지 않게).
+const gaId = /^G-[A-Z0-9]+$/.test(GA_MEASUREMENT_ID) ? GA_MEASUREMENT_ID : '';
 
 const nav = [
   { href: `${p}/`, label: t.blog, active: path === `${p}/` || path.startsWith(`${p}/blog`) },
@@ -56,6 +58,15 @@ const nav = [
   <meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
   {imageUrl && <meta name="twitter:image" content={imageUrl} />}
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+  {gaId && <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>}
+  {gaId && (
+    <script is:inline define:vars={{ gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', gaId);
+    </script>
+  )}
   {ADSENSE_CLIENT && (
     <script
       async
